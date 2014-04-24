@@ -1,0 +1,23 @@
+{
+	"name": "ds-json-patch-todos",
+	"version": "0.0.0",
+	"authors": [
+		"Brian Cavalier <brian@hovercraftstudios.com>"
+	],
+	"main": "main",
+	"moduleType": "node",
+	"license": "MIT",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"test",
+		"tests"
+	],
+	"dependencies": {
+		"rave": "~0",
+		"when": "~3.1",
+		"cola": "document-sync",
+		"wire": "git@github.com:briancavalier/wire-next.git"
+	}
+}

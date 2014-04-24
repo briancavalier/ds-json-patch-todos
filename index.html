@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" data-debug>
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link rel="stylesheet" href="base.css"/>
+    <script src="../bower_components/rave/rave.js"></script>
+
+</head>
+<body data-bard>
+
+<section>
+    <h2>Your Todos</h2>
+
+    <form class="create-todo" data-on-submit="todos@controller.add">
+        <input name="description" placeholder="Add a todo" autofocus/>
+        <input name="complete" type="checkbox" disabled style="display: none"/>
+        <button type="submit">Add</button>
+    </form>
+
+    <form data-on-submit="todos@controller.generate">
+        <input name="n" placeholder="Enter a number"/>
+        <button type="submit">Generate</button>
+    </form>
+
+    <section class="dont">
+        <p>Don't press this button ... no, really, don't</p>
+        <button class="candy-like" data-on-click="todos@controller.multiple">Shiny, candy-like button!</button>
+    </section>
+
+    <section data-path="todos">
+        <button data-on-click="todos@controller.completeAll">Complete All</button>
+        <button data-on-click="todos@controller.removeCompleted">Remove Completed</button>
+
+        <ul>
+            <li data-list data-on-click>
+                <input type="checkbox" name="complete"/>
+                <input name="description"/>
+                <span data-on-click="todos@controller.remove">&times;</span>
+                <input type="hidden" name="id"/>
+            </li>
+        </ul>
+    </section>
+
+</section>
+
+</body>
+</html>

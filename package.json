@@ -1,0 +1,20 @@
+{
+  "name": "ds-json-patch-todos",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "jiff": "~0.1",
+    "cola": "git://github.com/cujojs/cola.git#document-sync",
+    "ws": "~0.4.31",
+    "express": "~3.4.8"
+  },
+  "scripts": {
+	  "start": "./server.js"
+  }
+}
