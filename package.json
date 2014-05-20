@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "jiff": "~0.5.2",
+    "jiff": "~0.5.3",
     "cola": "git://github.com/cujojs/cola.git#document-sync",
     "ws": "~0.4.31",
     "express": "~3.4.8"

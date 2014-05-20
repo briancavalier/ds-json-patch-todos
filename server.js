@@ -7,8 +7,6 @@ var jiff = require('jiff');
 
 // Store todos in memory
 var todos = new Memory([], byId);
-var ids = Object.create(null);
-var todoId = 1;
 
 var clientId = 1;
 var clients = {};
@@ -53,13 +51,6 @@ function updateFromClient (client, patch, messageCounter) {
 
 	client._shadow = jiff.patch(patch, client._shadow);
 	todos.patch(patch);
-	ids = todos.get().reduce(function (ids, todo) {
-		if (todo.id === void 0) {
-			todo.id = todoId++;
-		}
-		ids[todo.id] = todo;
-		return ids;
-	}, {});
 
 	var returnPatch = todos.diff(client._shadow);
 	client.patch(returnPatch);
