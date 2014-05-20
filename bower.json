@@ -5,7 +5,7 @@
 		"Brian Cavalier <brian@hovercraftstudios.com>"
 	],
 	"main": "main",
-	"moduleType": "node",
+	"moduleType": [ "node" ],
 	"license": "MIT",
 	"ignore": [
 		"**/.*",
