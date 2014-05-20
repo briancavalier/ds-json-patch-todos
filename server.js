@@ -1,31 +1,26 @@
 #!/usr/bin/env node
 
+var express = require('express');
 var WebSocketServer = require('ws').Server;
 var Memory = require('cola/data/Memory');
 var jiff = require('jiff');
 
-// Simple express just to server static demo files
-var express = require('express');
-var app = express();
-app.configure(function () {
-	var cwd = process.cwd();
-	console.log(cwd);
-	app.use(express.static(cwd));
-	app.use(express.directory(cwd));
-	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-app.listen(8000);
-console.log('Open http://localhost:8000 in your browser');
-
-// The real fun: Setup DS WebSocket server
-var todos = new Memory([]);
+// Store todos in memory
+var todos = new Memory([], byId);
+var ids = Object.create(null);
+var todoId = 1;
 
 var clientId = 1;
 var clients = {};
 
-var server = new WebSocketServer({port: 8080});
+// Setup static file server for serving client app files
+listen(8000);
 
-server.on('connection', function(ws) {
+// The real fun: Setup DS WebSocket server
+var server = new WebSocketServer({port: 8080});
+server.on('connection', initClient);
+
+function initClient(ws) {
 	var id = clientId++;
 	var messageCounter = 1;
 	var client = clients[id] = new ClientProxy(ws, id);
@@ -43,23 +38,7 @@ server.on('connection', function(ws) {
 		patch = patch.patch;
 
 		process.nextTick(function() {
-			client._shadow = jiff.patch(patch, client._shadow);
-			todos.patch(patch);
-
-			var returnPatch = todos.diff(client._shadow);
-			client.patch(returnPatch);
-
-			if(patch && patch.length > 0) {
-				Object.keys(clients).forEach(function(clientId) {
-					if(clientId != id) {
-						var c = clients[clientId];
-						var returnPatch = jiff.diff(c._shadow, todos._shadow);
-						c.patch(returnPatch);
-					}
-				});
-			}
-
-			log(id, messageCounter++, '' + patch.length + ' patch ops applied');
+			updateFromClient(client, patch, messageCounter);
 		});
 	});
 
@@ -67,7 +46,40 @@ server.on('connection', function(ws) {
 		console.log('client ' + id + ': disconnected');
 		delete clients[id];
 	});
-});
+}
+
+function updateFromClient (client, patch, messageCounter) {
+	var id = client.id;
+
+	client._shadow = jiff.patch(patch, client._shadow);
+	todos.patch(patch);
+	ids = todos.get().reduce(function (ids, todo) {
+		if (todo.id === void 0) {
+			todo.id = todoId++;
+		}
+		ids[todo.id] = todo;
+		return ids;
+	}, {});
+
+	var returnPatch = todos.diff(client._shadow);
+	client.patch(returnPatch);
+
+	if (patch && patch.length > 0) {
+		Object.keys(clients).forEach(function (clientId) {
+			if (clientId != id) {
+				var c = clients[clientId];
+				var returnPatch = todos.diff(c.get());
+				c.patch(returnPatch);
+			}
+		});
+	}
+
+	log(id, messageCounter++, '' + patch.length + ' patch ops applied');
+}
+
+function byId(todo) {
+	return 'id' in todo ? todo.id : JSON.stringify(todo);
+}
 
 function log(cid, mid, msg) {
 	console.log('client ' + cid + ' [' + mid + ']: ' + msg);
@@ -84,8 +96,12 @@ ClientProxy.prototype = {
 		this.client.send(JSON.stringify({ data: data }));
 	},
 
+	get: function() {
+		return this._shadow;
+	},
+
 	diff: function(data) {
-		return jiff.diff(data, this._shadow);
+		return jiff.diff(data, this._shadow, byId);
 	},
 
 	patch: function(patch) {
@@ -106,3 +122,15 @@ ClientProxy.prototype = {
 	}
 };
 
+function listen (port) {
+	var app = express();
+	app.configure(function () {
+		var cwd = process.cwd();
+		console.log(cwd);
+		app.use(express.static(cwd));
+		app.use(express.directory(cwd));
+		app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+	});
+	app.listen(port);
+	console.log('Open http://localhost:' + port + ' in your browser');
+}

@@ -1,12 +1,9 @@
-var id = 0;
-
 module.exports = TodosController;
 
 function TodosController() {}
 
 TodosController.prototype = {
 	add: function(todos, todo) {
-		todo.id = ++id;
 		todos.push(todo);
 	},
 
@@ -55,14 +52,12 @@ TodosController.prototype = {
 	}
 };
 
-
+var counter = 1;
 function generateTodos(n) {
 	var todos = [];
 	for(var i=0; i<n; i++) {
-		++id;
 		todos.push({
-			id: id,
-			description: 'todo ' + id,
+			description: 'todo ' + (counter++),
 			complete: false
 		});
 	}
