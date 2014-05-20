@@ -15,8 +15,8 @@
 		"tests"
 	],
 	"dependencies": {
-		"rave": "~0",
-		"when": "~3.1",
+		"rave": "~0.1",
+		"when": "~3.2",
 		"cola": "document-sync",
 		"wire": "git@github.com:briancavalier/wire-next.git"
 	}

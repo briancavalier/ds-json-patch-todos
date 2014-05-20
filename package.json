@@ -1,6 +1,6 @@
 {
   "name": "ds-json-patch-todos",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "server.js",
   "scripts": {
@@ -9,7 +9,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "jiff": "~0.1",
+    "jiff": "~0.5.2",
     "cola": "git://github.com/cujojs/cola.git#document-sync",
     "ws": "~0.4.31",
     "express": "~3.4.8"
